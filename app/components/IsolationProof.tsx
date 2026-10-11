@@ -7,7 +7,8 @@ export function IsolationProof(props: { tenants: { id: string; name: string }[];
   const [busy, setBusy] = useState(false);
   const [proof, setProof] = useState<Proof | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const tenantB = props.tenants.find((t) => t.id === b)?.id === props.tenantA ? props.tenants.find((t) => t.id !== props.tenantA)!.id : b;
+  // The roster loads after first render, so fall back to the first other tenant until a choice is made.
+  const tenantB = b && b !== props.tenantA && props.tenants.some((t) => t.id === b) ? b : (props.tenants.find((t) => t.id !== props.tenantA)?.id ?? "");
 
   const run = async () => {
     setBusy(true);
