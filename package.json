@@ -13,7 +13,6 @@
     "setup:atlas": "tsx scripts/atlas-setup.ts",
     "seed": "tsx scripts/seed.ts",
     "demo:reset": "tsx scripts/demo-reset.ts",
-    "rehearse": "tsx scripts/rehearse.ts",
     "test": "vitest run",
     "test:isolation": "vitest run tests/isolation.test.ts tests/validators.test.ts tests/eslint-rule.test.ts",
     "test:sim": "vitest run tests/sim.test.ts",
@@ -21,6 +20,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",
+    "@elevenlabs/elevenlabs-js": "^2.71.0",
     "@huggingface/transformers": "^4.3.1",
     "diff": "^9.0.0",
     "mongodb": "^7.7.0",

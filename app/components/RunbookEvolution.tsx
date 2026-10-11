@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { fmtTime, type RevisionJ, type RunbookJ } from "../lib/api";
+import { RevisionAudio } from "./RevisionAudio";
 
 const k = (s: unknown) => JSON.stringify(s);
 const stepText = (s: Record<string, unknown>) => {
@@ -11,7 +12,7 @@ const stepText = (s: Record<string, unknown>) => {
   return `${action}${args ? " " + args : ""}`;
 };
 
-export function RunbookEvolution(props: { runbooks: RunbookJ[]; revisions: RevisionJ[]; selectedRunbookId: string | null; onSelectRunbook: (id: string) => void }) {
+export function RunbookEvolution(props: { tenantId: string; voice: boolean; runbooks: RunbookJ[]; revisions: RevisionJ[]; selectedRunbookId: string | null; onSelectRunbook: (id: string) => void }) {
   const runbook = props.runbooks.find((r) => r._id === props.selectedRunbookId) ?? props.runbooks[0] ?? null;
   const revisions = useMemo(() => props.revisions.filter((r) => r.runbook_id === runbook?._id).sort((a, b) => a.to_version - b.to_version), [props.revisions, runbook]);
   const [selVersion, setSelVersion] = useState<number | null>(null);
@@ -82,7 +83,14 @@ export function RunbookEvolution(props: { runbooks: RunbookJ[]; revisions: Revis
                 <dt>Change</dt>
                 <dd>{shown.diff.summary}</dd>
                 <dt>Root cause (Claude)</dt>
-                <dd>{shown.rationale}</dd>
+                <dd>
+                  {shown.rationale}
+                  {props.voice && (
+                    <div style={{ marginTop: 6 }}>
+                      <RevisionAudio key={shown._id} tenantId={props.tenantId} revisionId={shown._id} />
+                    </div>
+                  )}
+                </dd>
               </dl>
             </>
           ) : (

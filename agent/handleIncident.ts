@@ -81,7 +81,7 @@ export async function handleIncident(tenantId: string, incidentId: string, opts:
       // Global templates are read-only: adapting one forks a tenant-owned copy.
       runbook = chosen.tenant_id === "global" ? await db.forkRunbook(tenantId, chosen._id, sel.data.steps, `adapted from global template for incident ${incidentId}`) : chosen;
       steps = sel.data.steps;
-      selectDetail = `${runbook.name} v${runbook.current_version}: ${sel.data.selection_notes}${sel.retried ? " (schema retry)" : ""}`;
+      selectDetail = `${runbook.name} v${runbook.current_version}: ${sel.data.selection_notes.trim() || `${sel.data.steps.length} steps adapted for ${tenant.name}`}${sel.retried ? " (schema retry)" : ""}`;
     }
     await step("select", "done", selectDetail);
 

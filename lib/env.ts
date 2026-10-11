@@ -18,5 +18,7 @@ export const env = {
   qeMasterKey: () => Buffer.from(required("QE_LOCAL_MASTER_KEY"), "base64"),
   voyageKey: () => required("VOYAGE_API_KEY"),
   claudeModel: () => process.env.CLAUDE_MODEL ?? "claude-opus-5-5",
+  elevenLabsKey: () => process.env.ELEVENLABS_API_KEY ?? "",
+  voiceEnabled: () => process.env.VOICE_ENABLED === "true" && Boolean(process.env.ELEVENLABS_API_KEY),
   isProduction: process.env.NODE_ENV === "production",
 };

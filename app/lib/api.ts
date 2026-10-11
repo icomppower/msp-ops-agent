@@ -17,6 +17,7 @@ export type Health = {
   hybridSearch: string;
   embeddings: { provider: string; model: string; dims: number };
   claudeModel: string;
+  voice: boolean;
   searchIndexes: { name: string; status: string; queryable: boolean }[];
 };
 export type Metrics = { runbook: RunbookJ | null; series: MetricJ[]; revisions: { at: string; to_version: number }[] };

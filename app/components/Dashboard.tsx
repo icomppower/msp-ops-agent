@@ -69,7 +69,7 @@ export function Dashboard() {
           connected={live.connected}
           onFired={() => void live.reload()}
         />
-        <RunbookEvolution runbooks={live.overview?.runbooks ?? []} revisions={live.overview?.revisions ?? []} selectedRunbookId={runbookId} onSelectRunbook={setRunbookId} />
+        <RunbookEvolution tenantId={tenantId} voice={Boolean(health?.voice)} runbooks={live.overview?.runbooks ?? []} revisions={live.overview?.revisions ?? []} selectedRunbookId={runbookId} onSelectRunbook={setRunbookId} />
         <MetricsPanel tenantId={tenantId} runbooks={live.overview?.runbooks ?? []} selectedRunbookId={runbookId} version={live.attemptsVersion} />
         <IsolationProof tenants={roster?.tenants ?? []} tenantA={tenantId} />
       </div>

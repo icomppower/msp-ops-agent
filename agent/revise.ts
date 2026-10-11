@@ -51,10 +51,18 @@ export async function maybeRevise(tenantId: string, runbookId: string, rolling: 
 
   const current = runbook.versions.find((v) => v.version === runbook.current_version)!.steps;
   const { added, removed } = diffSteps(current, proposal.data.steps);
+  // Claude occasionally returns empty prose fields; the record must still explain itself.
+  const describe = (s: Step) => Object.values(s).map((v) => (Array.isArray(v) ? v.join(",") : String(v))).join(" ");
+  const evidence = failed.flatMap((f) => f.attempt.steps_executed.map((s) => s.detail)).find((d) => /Group Policy|re-pinned|managed by/i.test(d));
+  const fallbackRationale =
+    `Verified failures on ${tenant.name}: ${failed.map((f) => f.attempt.verification.detail).join(" | ")}. ` +
+    (evidence ? `Step output showed: "${evidence}". ` : "") +
+    `New version adds ${added.map(describe).join("; ") || "no steps"} and removes ${removed.map(describe).join("; ") || "no steps"}.`;
+  const fallbackSummary = `${added.length} step(s) added, ${removed.length} removed${added.length ? `: ${added.map((s) => s.action).join(", ")}` : ""}`;
   const revision = await db.commitRevision(tenantId, runbookId, {
     steps: proposal.data.steps,
-    rationale: proposal.data.root_cause_analysis,
-    diff: { added, removed, summary: proposal.data.diff_summary },
+    rationale: proposal.data.root_cause_analysis.trim() || fallbackRationale,
+    diff: { added, removed, summary: proposal.data.diff_summary.trim() || fallbackSummary },
     trigger: { failed_attempt_ids: rolling.failed_attempt_ids, success_rate: rolling.rate, window: REVISION_WINDOW },
     reason: `auto-revision: rolling success ${rolling.rate} < threshold over ${REVISION_WINDOW} attempts`,
   });

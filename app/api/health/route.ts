@@ -13,5 +13,6 @@ export async function GET() {
     hybridSearch: health.rankFusionSupported ? "$rankFusion" : "manual reciprocal rank fusion ($vectorSearch ∪ $search, fused in aggregation)",
     embeddings: { provider: embeddingProvider.name, model: embeddingProvider.model, dims: embeddingProvider.dims },
     claudeModel: env.claudeModel(),
+    voice: env.voiceEnabled(),
   });
 }
