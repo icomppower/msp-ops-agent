@@ -1,0 +1,10 @@
+packages:
+  - "."
+# pnpm 12 ignores the `pnpm` field in package.json; postinstall builds are approved here.
+allowBuilds:
+  mongodb-client-encryption: true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  onnxruntime-node: true
+  protobufjs: true

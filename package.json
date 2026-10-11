@@ -1,0 +1,44 @@
+{
+  "name": "msp-ops-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.10.1",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "setup:atlas": "tsx scripts/atlas-setup.ts",
+    "seed": "tsx scripts/seed.ts",
+    "demo:reset": "tsx scripts/demo-reset.ts",
+    "rehearse": "tsx scripts/rehearse.ts",
+    "test": "vitest run",
+    "test:isolation": "vitest run tests/isolation.test.ts tests/validators.test.ts tests/eslint-rule.test.ts",
+    "test:sim": "vitest run tests/sim.test.ts",
+    "test:e2e": "vitest run tests/agent.e2e.test.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
+    "@huggingface/transformers": "^4.3.1",
+    "diff": "^9.0.0",
+    "mongodb": "^7.7.0",
+    "mongodb-client-encryption": "^7.2.1",
+    "next": "^16.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.0",
+    "tsx": "^4.23.0",
+    "typescript": "~5.9.0",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^4.0.0"
+  }
+}
