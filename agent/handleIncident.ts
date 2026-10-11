@@ -78,9 +78,16 @@ export async function handleIncident(tenantId: string, incidentId: string, opts:
         user: selectUser({ tenant, incident, similar, candidates }),
       });
       const chosen = candidates.find((c) => c._id === sel.data.runbook_id) ?? candidates[0];
+      // Adaptation may only parameterize the runbook's existing steps (DNS servers, hosts, MTU).
+      // New actions enter a runbook solely through the verified-failure revision path, so
+      // "the runbook learned" is always a recorded revision, never a one-off improvisation.
+      const currentSteps = chosen.versions.find((v) => v.version === chosen.current_version)!.steps;
+      const allowed = new Set(currentSteps.map((s) => s.action));
+      const adapted = sel.data.steps.filter((s) => allowed.has(s.action));
+      const constrained = adapted.length > 0 && currentSteps.every((s) => adapted.some((a) => a.action === s.action)) ? adapted : currentSteps;
       // Global templates are read-only: adapting one forks a tenant-owned copy.
-      runbook = chosen.tenant_id === "global" ? await db.forkRunbook(tenantId, chosen._id, sel.data.steps, `adapted from global template for incident ${incidentId}`) : chosen;
-      steps = sel.data.steps;
+      runbook = chosen.tenant_id === "global" ? await db.forkRunbook(tenantId, chosen._id, constrained, `adapted from global template for incident ${incidentId}`) : chosen;
+      steps = constrained;
       selectDetail = `${runbook.name} v${runbook.current_version}: ${sel.data.selection_notes.trim() || `${sel.data.steps.length} steps adapted for ${tenant.name}`}${sel.retried ? " (schema retry)" : ""}`;
     }
     await step("select", "done", selectDetail);
